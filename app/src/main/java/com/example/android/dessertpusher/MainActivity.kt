@@ -28,11 +28,15 @@ import androidx.lifecycle.LifecycleObserver
 import com.example.android.dessertpusher.databinding.ActivityMainBinding
 import timber.log.Timber
 
+private const val KEY_REVENUE = "key_revenue"
+private const val KEY_DESSERTS_SOLD = "key_desserts_sold"
+private const val KEY_DESSERTS_TIMER = "key_desserts_timer"
+
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private var revenue = 0
     private var dessertsSold = 0
-    private lateinit var desertTimer: DessertTimer
+    private lateinit var dessertTimer: DessertTimer
 
     // Contains all the views
     private lateinit var binding: ActivityMainBinding
@@ -76,7 +80,13 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
             onDessertClicked()
         }
 
-        desertTimer = DessertTimer(this.lifecycle)
+        dessertTimer = DessertTimer(this.lifecycle)
+
+        if (savedInstanceState != null){
+            revenue = savedInstanceState.getInt(KEY_REVENUE)
+            dessertsSold = savedInstanceState.getInt(KEY_DESSERTS_SOLD)
+            dessertTimer.secondsCount = savedInstanceState.getInt(KEY_DESSERTS_TIMER)
+        }
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -84,6 +94,12 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
         // Make sure the correct dessert is showing
         binding.dessertButton.setImageResource(currentDessert.imageId)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        Timber.i("onRestoreInstanceState called")
     }
 
     override fun onStart() {
@@ -114,6 +130,16 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         super.onRestart()
 
         Timber.i("onRestart called")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        Timber.i("onSaveInstanceState called")
+
+        outState?.putInt(KEY_REVENUE, revenue)
+        outState?.putInt(KEY_DESSERTS_SOLD, dessertsSold)
+        outState?.putInt(KEY_DESSERTS_TIMER, dessertTimer.secondsCount)
     }
 
     override fun onStop() {
