@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
             onDessertClicked()
         }
 
-        desertTimer = DessertTimer()
+        desertTimer = DessertTimer(this.lifecycle)
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -90,8 +90,6 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         super.onStart()
 
         Timber.i("onStart called")
-
-        desertTimer.startTimer()
     }
 
     override fun onResume() {
@@ -122,8 +120,6 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         super.onStop()
 
         Timber.i("onStop called")
-
-        desertTimer.stopTimer()
     }
 
     /**
